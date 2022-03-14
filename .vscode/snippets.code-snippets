@@ -1,0 +1,92 @@
+{
+	"Variable": {
+		"prefix": "var",
+		"body": [
+			"const $1 = $0"
+		]
+	},
+	"Func": {
+		"prefix": "func",
+		"body": [
+			"const $1 = ($2) => {",
+			"  $0",
+			"}"
+		]
+	},
+	"Module Exports": {
+		"prefix": "me",
+		"body": [
+			"module.exports = $0"
+		]
+	},
+	"require": {
+		"prefix": "require",
+		"body": [
+			"const $1 = require('$2')$0"
+		]
+	},
+	"handler": {
+		"prefix": "handler",
+		"body": [
+			"const handle$1 = () => {",
+			"  $0",
+			"}",
+		]
+	},
+	"useState": {
+		"prefix": "useState",
+		"body": [
+			"const [$1, set$1] = useState$2($0)"
+		]
+	},
+	"useEffect": {
+		"prefix": "useEffect",
+		"body": [
+			"useEffect(() => {",
+			"  $0",
+			"}, [$1])",
+		]
+	},
+	"useSelector": {
+		"prefix": "useSelector",
+		"body": [
+			"const $1 = useTypedSelector((state) => select$2)$0"
+		]
+	},
+	"useRef": {
+		"prefix": "useRef",
+		"body": [
+			"const $1Ref = useRef(null)$0"
+		]
+	},
+	"Selector": {
+		"prefix": "selector",
+		"body": [
+			"export const select$1 = (state: RootState) => {",
+			"  return state.$2",
+			"}",
+		]
+	},
+	"Use dispatch": {
+		"prefix": "useDispatch",
+		"body": [
+			"const dispatch = useTypedDispatch()$0",
+		]
+	},
+	"Component": {
+		"prefix": "component",
+		"body": [
+			"",
+			"interface IProps {",
+			"",
+			"}",
+			"",
+			"const $TM_FILENAME_BASE = ({}: IProps) => {",
+			"  return (",
+			"  )",
+			"}",
+			"",
+			"export default $TM_FILENAME_BASE",
+		]
+	},
+}
