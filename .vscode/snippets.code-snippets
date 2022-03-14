@@ -1,0 +1,161 @@
+{
+	"Middleware": {
+		"scope": "javascript",
+		"prefix": "middleware",
+		"body": [
+			"const $1Middleware = (req, res, next) => {",
+			"  try {",
+			"    $0",
+			"  } catch(e) {",
+			"    return res.status(500).json({ error: 'Unknown error' })",
+			"  }",
+			"}",
+			"",
+			"export default $1Middleware"
+		]
+	},
+	"Variable": {
+		"scope": "javascript",
+		"prefix": "var",
+		"body": [
+			"const $1 = $0"
+		]
+	},
+	"Func": {
+		"scope": "javascript",
+		"prefix": "func",
+		"body": [
+			"const $1 = ($2) => {",
+			"  $0",
+			"}"
+		]
+	},
+	"Module Exports": {
+		"scope": "javascript",
+		"prefix": "me",
+		"body": [
+			"module.exports = $0"
+		]
+	},
+	"require": {
+		"scope": "javascript",
+		"prefix": "require",
+		"body": [
+			"const $1 = require('$2')$0"
+		]
+	},
+	"handler": {
+		"scope": "javascript",
+		"prefix": "handler",
+		"body": [
+			"const handle$1 = () => {",
+			"  $0",
+			"}",
+		]
+	},
+	"className": {
+		"scope": "javascript",
+		"prefix": "class",
+		"body": [
+			"className={css.$0}"
+		]
+	},
+	"useState": {
+		"scope": "javascript",
+		"prefix": "useState",
+		"body": [
+			"const [$1, set$1] = useState($0)"
+		]
+	},
+	"useEffect": {
+		"scope": "javascript",
+		"prefix": "useEffect",
+		"body": [
+			"useEffect(() => {",
+			"  $0",
+			"}, [$1])",
+		]
+	},
+	"useSelector": {
+		"scope": "javascript",
+		"prefix": "useSelector",
+		"body": [
+			"const $1 = useSelector((state) => select$2)$0"
+		]
+	},
+	"useRef": {
+		"scope": "javascript",
+		"prefix": "useRef",
+		"body": [
+			"const $1Ref = useRef(null)$0"
+		]
+	},
+	"Selector": {
+		"scope": "javascript",
+		"prefix": "selector",
+		"body": [
+			"export const select$1 = (state) => {",
+			"  return state.$2",
+			"}",
+		]
+	},
+	"Use dispatch": {
+		"scope": "javascript",
+		"prefix": "useDispatch",
+		"body": [
+			"const dispatch = useDispatch()$0",
+		]
+	},
+	"Div block": {
+		"scope": "javascript",
+		"prefix": "block",
+		"body": [
+			"<div className={css.$1}>",
+			"  $0",
+			"</div>",
+		]
+	},
+	"Component": {
+		"scope": "javascript",
+		"prefix": "component",
+		"body": [
+			"import { View, StyleSheet }  from 'react-native'",
+			"",
+			"const $TM_FILENAME_BASE = ({}) => {",
+			"  return (",
+			"    <View style={styles.container}>",
+			"      $0",
+			"    </View>",
+			"  )",
+			"}",
+			"",
+			"const styles = StyleScheet.create({})",
+			"",
+			"export default $TM_FILENAME_BASE",
+		]
+	},
+	"Component with props": {
+		"scope": "javascript",
+		"prefix": "component_props",
+		"body": [
+			"import { View, StyleSheet }  from 'react-native'",
+			"import pt from 'prop-types'",
+			"",
+			"const $TM_FILENAME_BASE = ({}) => {",
+			"  return (",
+			"    <View style={styles.container}>",
+			"      $0",
+			"    </View>",
+			"  )",
+			"}",
+			"",
+			"const styles = StyleSheet.create({})",
+			"",
+			"$TM_FILENAME_BASE.propTypes = {",
+			"",
+			"}",
+			"",
+			"export default $TM_FILENAME_BASE",
+		]
+	},
+}
