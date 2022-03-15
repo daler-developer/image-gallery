@@ -1,10 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common"
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common"
 import { MongooseModule } from '@nestjs/mongoose'
 
 import { UsersController } from "./users.controller"
 import { UsersService } from "./users.service"
-import { User, UserSchema } from '../schemas/user.schema'
-import { Post, PostSchema } from "src/schemas/post.schema"
+import { User, UserSchema } from './user.schema'
+import { PopulateUserMiddleware } from "src/middlewares/populate-user.middleware"
 
 
 @Module({
@@ -15,4 +15,8 @@ import { Post, PostSchema } from "src/schemas/post.schema"
   controllers: [UsersController],
   exports: [UsersService]
 })
-export class UsersModule {}
+export class UsersModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PopulateUserMiddleware).forRoutes({ method: RequestMethod.PATCH, path: '/api/users/:_id' })
+  }
+}

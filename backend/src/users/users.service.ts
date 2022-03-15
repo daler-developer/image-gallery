@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose"
 import { Model } from 'mongoose'
 import * as jwt from 'jsonwebtoken'
 
-import { User, UserDocument } from '../schemas/user.schema'
+import { User, UserDocument } from './user.schema'
 import { CreateUserDto } from './dto/create-user.dto'
 
 @Injectable()
@@ -37,6 +37,20 @@ export class UsersService {
     return candidate
   }
 
+  async updateProfile(userId: string, props: { username?: string, password?: string, fileName?: string }) {
+    const { username, password, fileName } = props
+
+    const avatarUrl = fileName ?  this.generateAvatarUrl(fileName) : undefined
+
+    const updatedUser = await this.UserModel.findOneAndUpdate(
+      { _id: userId }, 
+      { username, password, avatarUrl },
+      { new: true }
+    )
+
+    return updatedUser
+  }
+
   parseToken(token: string) {
     let decoded: any
 
@@ -53,6 +67,10 @@ export class UsersService {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '2 days' })
 
     return token
+  }
+
+  generateAvatarUrl(fileName: string) {
+    return `/api/uploads/avatar/${fileName}`
   }
 
 }

@@ -6,16 +6,16 @@ export type PostDocument = Post & Document
 @Schema()
 export class Post {
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   creator: string[]
 
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   desc: string
 
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   fileUrl: string
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, default: () => [] }] })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, default: () => [] }], required: true })
   likes: string[]
 }
 

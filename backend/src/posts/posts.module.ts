@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common"
 import { MongooseModule } from "@nestjs/mongoose"
 import { PopulateUserMiddleware } from "src/middlewares/populate-user.middleware"
-import { Post, PostSchema } from "src/schemas/post.schema"
+import { Post, PostSchema } from "src/posts/post.schema"
 import { UsersModule } from "src/users/users.module"
 
 import { PostsController } from "./posts.controller"

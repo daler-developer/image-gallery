@@ -2,9 +2,9 @@ import { diskStorage } from "multer"
 import * as path from 'path'
 import * as fs from 'fs'
 
-export const postImagesStorage = diskStorage({
+export const avatarsStorage = diskStorage({
   destination: function (req, file, cb) {
-    const dir = path.join(__dirname, '..', 'uploads', 'post-images')
+    const dir = path.join(__dirname, '..', 'uploads', 'avatars')
 
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true })
