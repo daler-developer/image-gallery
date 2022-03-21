@@ -7,7 +7,7 @@ export type PostDocument = Post & Document
 export class Post {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  creator: string[]
+  creator: string
 
   @Prop({ type: String, required: true })
   desc: string
@@ -17,6 +17,9 @@ export class Post {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, default: () => [] }], required: true })
   likes: string[]
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, default: () => [] }], required: true })
+  comments: string[]
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post)

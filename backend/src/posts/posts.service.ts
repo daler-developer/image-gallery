@@ -9,10 +9,20 @@ export class PostsService {
 
   constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {}
 
-  async getAll() {
-    const posts = await this.PostModel.find({})
+  async getAll(filters?: { creator: string }) {
+    const posts = this.PostModel.find({})
+
+    if (filters.creator) {
+      posts.where('creator').equals(filters.creator)
+    }
 
     return posts 
+  }
+
+  async getById(_id: string){
+    const post = await this.PostModel.findOne({ _id })
+
+    return post
   }
 
   async create(createPostDto: CreatePostDto, filename: string, creator: string) {
@@ -47,6 +57,12 @@ export class PostsService {
     post.save()
 
     return post
+  }
+
+  async delete(postId: string) {
+    const post = await this.PostModel.findOneAndDelete({ _id: postId })
+
+    return post._id
   }
 
   generateUrl(filename: string) {

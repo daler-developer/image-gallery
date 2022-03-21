@@ -6,6 +6,7 @@ import { LoginDto } from './dto/login.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { avatarsStorage } from './avatars.storage'
+import { User } from 'src/decorators/user.decorator'
 
 
 @Controller('/api/users')
@@ -15,7 +16,9 @@ export class UsersController {
 
   @Get('')
   async getUsers() {
-    return await this.usersService.getAll()
+    const users =  await this.usersService.getAll()
+    
+    return { users }
   }
 
   @Get('/:_id')
@@ -53,8 +56,14 @@ export class UsersController {
 
   @Patch('/update-profile')
   @UseInterceptors(FileInterceptor('avatar', { storage: avatarsStorage }))
-  async updateProfile(@Param('_id') _id: string, @UploadedFile() file: Express.Multer.File, @Body() dto: UpdateUserDto, @Req() req: any) {
-    return await this.usersService.updateProfile(req.user._id, { ...dto, fileName: file?.filename })
+  async updateProfile(
+    @Param('_id') _id: string, 
+    @User('_id') userId: string,
+    @UploadedFile() file: Express.Multer.File, 
+    @Body() dto: UpdateUserDto, 
+    
+  ) {
+    return await this.usersService.updateProfile(userId, { ...dto, fileName: file?.filename })
   }
 
 }
