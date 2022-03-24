@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import { Link, Navigate, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useEffect, useMemo } from 'react'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
@@ -14,6 +14,8 @@ import useAuth from '../hooks/useAuth'
 
 const Auth = () => {
   const [params, setParams] = useSearchParams()
+
+  const navigate = useNavigate()
 
   const auth = useAuth()
 
@@ -44,6 +46,7 @@ const Auth = () => {
     }),
     onSubmit(v) {
       if (tab === 'login') {
+        navigate('/home')
         auth.login(v.username, v.password)
       } else if (tab === 'register') {
         auth.register(v.username, v.password)
@@ -51,9 +54,9 @@ const Auth = () => {
     }
   })
 
-  if (auth.isAuthenticated) {
-    return <Navigate to="/home" />
-  }
+  // if (auth.isAuthenticated) {
+  //   return <Navigate to="/home" />
+  // }
 
   return (
     <Container component="main" maxWidth="xs">

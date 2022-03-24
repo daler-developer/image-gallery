@@ -1,7 +1,8 @@
 import { Module, ConsoleLogger, Logger } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
-import { CommentsModule } from './comments/comments.module'
+import * as path from 'path'
+import { ServeStaticModule } from '@nestjs/serve-static'
 import { PostsModule } from './posts/posts.module'
 import { UsersModule } from './users/users.module'
 
@@ -10,9 +11,12 @@ import { UsersModule } from './users/users.module'
   imports: [
     UsersModule,
     PostsModule,
-    // CommentsModule,
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGO_URL)
+    MongooseModule.forRoot(process.env.MONGO_URL),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, 'uploads'),
+      serveRoot: '/api/uploads'
+    })
   ],
   controllers: [],
   providers: [],

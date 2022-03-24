@@ -13,8 +13,8 @@ export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Get('')
-  async getAll(@Query('creator') creator) {
-    const posts = await this.postsService.getAll({ creator })
+  async getAll(@Query('creator') creator, @User('userId') userId: string) {
+    const posts = await this.postsService.getAll(userId, creator)
 
     return { posts }
   }

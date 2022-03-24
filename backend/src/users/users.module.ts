@@ -5,11 +5,13 @@ import { UsersController } from "./users.controller"
 import { UsersService } from "./users.service"
 import { User, UserSchema } from './user.schema'
 import { PopulateUserMiddleware } from "src/middlewares/populate-user.middleware"
+import { Post, PostSchema } from "src/posts/post.schema"
 
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
   ],
   providers: [UsersService],
   controllers: [UsersController],

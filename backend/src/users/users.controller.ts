@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, UploadedFile, UseInterceptors } from '@nestjs/common'
 
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -15,8 +15,8 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get('')
-  async getUsers() {
-    const users =  await this.usersService.getAll()
+  async getUsers(@Query('postLiked') postLiked: string) {
+    const users = await this.usersService.getAll({ postLiked })
     
     return { users }
   }
@@ -63,7 +63,9 @@ export class UsersController {
     @Body() dto: UpdateUserDto, 
     
   ) {
-    return await this.usersService.updateProfile(userId, { ...dto, fileName: file?.filename })
+    const user = await this.usersService.updateProfile(userId, { ...dto, fileName: file?.filename }) 
+
+    return { user }
   }
 
 }

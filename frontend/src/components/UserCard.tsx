@@ -1,9 +1,9 @@
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
-import Avatar from '@mui/material/Avatar'
 import { IUser } from '../redux/reducers/users'
 import Typography from '@mui/material/Typography'
 import useTypedDispatch from '../hooks/useTypedDispatch'
+import Avatar from '@mui/material/Avatar'
 import { postsActions, selectSelectedUserId } from '../redux/reducers/posts'
 import useTypedSelector from '../hooks/useTypesSelector'
 
@@ -38,10 +38,7 @@ const UserCard = ({ user }: IProps) => {
         })
       }}
     >
-      <Avatar
-      >
-        {user.username.at(0).toUpperCase()}
-      </Avatar>
+      <Avatar src={user.avatarUrl} />
       <Typography variant='h6'>
         {user.username}
       </Typography>

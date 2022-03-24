@@ -1,4 +1,3 @@
-import Dialog from '@mui/material/Dialog'
 import Box from '@mui/material/Box'
 import * as yup from 'yup'
 import { selectCurrentModal, uiActions } from '../redux/reducers/ui'
@@ -11,6 +10,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import Button from '@mui/material/Button'
+import Modal from './Modal'
 import { postsActions } from '../redux/reducers/posts'
 
 
@@ -29,8 +29,10 @@ const CreatePostModal = () => {
     validationSchema: yup.object().shape({
       desc: yup.string().min(3, 'Too short').max(15, 'Too long')
     }),
-    onSubmit(v) {
-      dispatch(postsActions.createPost({ desc: v.desc, image }))
+    async onSubmit(v) {
+      await dispatch(postsActions.createPost({ desc: v.desc, image }))
+      dispatch(uiActions.closeModal())
+      clearForm()
     }
   })
 
@@ -38,6 +40,16 @@ const CreatePostModal = () => {
 
   const isOpen = useMemo(() => currentModal === 'create-post', [currentModal])
   const imageUrl = useMemo(() => image ? URL.createObjectURL(image) : null, [image])
+
+  const clearForm = () => {
+    form.resetForm()
+    clearImage()
+  }
+
+  const clearImage = () => {
+    fileInputRef.current.value = null
+    setImage(null)
+  }
 
   const handleClose = () => {
     dispatch(uiActions.closeModal())
@@ -54,25 +66,23 @@ const CreatePostModal = () => {
   }
 
   const handleRemoveImageBtnClick = () => {
-    fileInputRef.current.value = null
-    setImage(null)
+    clearImage
   }
 
   return <>
-    <Dialog open={isOpen} onClose={handleClose}>
+    <Modal isOpen={isOpen} title='Create Post' maxWidth='xs'>
       <Box
         component='form'
         sx={{
-          padding: '10px',
           display: 'flex',
           flexDirection: 'column',
-
         }}
         noValidate
         onSubmit={form.handleSubmit}
       >
         <TextField
-          label="Description"
+          size='small'
+          placeholder="Description"
           name="desc"
           value={form.values.desc}
           onChange={form.handleChange}
@@ -83,6 +93,7 @@ const CreatePostModal = () => {
           image ? (
             <Box
               sx={{
+                mt: '5px',
                 position: 'relative'
               }}
             >
@@ -91,7 +102,7 @@ const CreatePostModal = () => {
                 src={imageUrl}
                 sx={{
                   borderRadius: '3px',
-                  mt: '3px'
+                  width: '100%',
                 }}
               />
               <IconButton
@@ -103,7 +114,7 @@ const CreatePostModal = () => {
               </IconButton>
             </Box>
           ) : (
-            <Button type='button' endIcon={<PhotoCamera />} sx={{ mt: '3px' }} onClick={handleUploadBtnClick}>
+            <Button type='button' endIcon={<PhotoCamera />} sx={{ mt: '5px' }} onClick={handleUploadBtnClick}>
               Upload
             </Button>
           )
@@ -117,7 +128,7 @@ const CreatePostModal = () => {
           Create
         </Button>
       </Box>
-    </Dialog>
+    </Modal>
 
     <input type="file" hidden ref={fileInputRef} onChange={handleFileInputChange} />
   </>

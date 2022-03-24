@@ -5,14 +5,27 @@ import * as jwt from 'jsonwebtoken'
 
 import { User, UserDocument } from './user.schema'
 import { CreateUserDto } from './dto/create-user.dto'
+import { Post, PostDocument } from "src/posts/post.schema"
 
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectModel(User.name) private UserModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private UserModel: Model<UserDocument>,
+    @InjectModel(Post.name) private PostModel: Model<PostDocument>,
+  ) {}
 
-  async getAll() {
-    const users = await this.UserModel.find({}) 
+  async getAll({ postLiked }: { postLiked: string }) {
+    const users = this.UserModel.find({})
+    let post
+
+    if (postLiked) {
+      post = await this.PostModel.findOne({ _id: postLiked })
+    }
+
+    if (postLiked) {
+      users.where('_id').in(post.likes)
+    }
 
     return users
   }
@@ -70,7 +83,7 @@ export class UsersService {
   }
 
   generateAvatarUrl(fileName: string) {
-    return `/api/uploads/avatar/${fileName}`
+    return `/api/uploads/avatars/${fileName}`
   }
 
 }

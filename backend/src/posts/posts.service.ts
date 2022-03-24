@@ -3,20 +3,37 @@ import { InjectModel } from "@nestjs/mongoose"
 import { Model } from 'mongoose'
 import { Post, PostDocument } from "src/posts/post.schema"
 import { CreatePostDto } from "./dto/create-post.dto"
+import mongoose from 'mongoose'
 
 @Injectable()
 export class PostsService {
 
   constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {}
 
-  async getAll(filters?: { creator: string }) {
-    const posts = this.PostModel.find({})
+  async getAll(currentUserId: string, creator?: string) {
+    // const query = this.PostModel.aggregate()
 
-    if (filters.creator) {
-      posts.where('creator').equals(filters.creator)
+    // if (creator) {
+    //   query.match({  })
+    // }
+
+    // query.addFields({ likesCount: { $size: '$likes' } })
+    // query.addFields({ commentsCount: { $size: '$comments' } })
+
+
+    // const results = await query.exec()
+
+    // return results
+
+    const query = this.PostModel.find({})
+
+    if (creator) {
+      query.where('creator').equals(creator)
     }
 
-    return posts 
+    const posts = await query.exec()
+
+    return posts
   }
 
   async getById(_id: string){

@@ -13,6 +13,21 @@ const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, thunkAPI) => {
   }
 })
 
+const updateProfile = createAsyncThunk('users/update-rofile', async ({ username, avatar }: { username?: string, avatar?: File }, thunkAPI) => {
+  try {
+    const form = new FormData()
+
+    username && form.append('username', username)
+    avatar && form.append('avatar', avatar, avatar.name)
+
+    const { data } = await client.patch(`/api/users/update-profile`, form)
+
+    return data.user
+  } catch (e) {
+    return thunkAPI.rejectWithValue('error')
+  }
+})
+
 export interface IUser {
   _id: string
   username: string
@@ -50,7 +65,6 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUsers.pending, (state, { payload }: any) => {
         state.isFetching = true
-        state.list = []
       })
       .addCase(fetchUsers.fulfilled, (state, { payload }: any) => {
         state.isFetching = true
@@ -59,6 +73,17 @@ const usersSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, { payload }: any) => {
         state.isFetching = false
         state.list = []
+      })
+      .addCase(updateProfile.pending, (state, { payload }: any) => {
+
+      })
+      .addCase(updateProfile.fulfilled, (state, { payload }: PayloadAction<IUser>) => {
+        const index = state.list.findIndex((user) => user._id === payload._id)
+        
+        state.list[index] = payload
+      })
+      .addCase(updateProfile.rejected, (state, { payload }: any) => {
+
       })
   }
 })
@@ -73,7 +98,8 @@ export const selectUserById = (state: RootState, _id: string) => {
 
 export const usersActions = {
   ...usersSlice.actions,
-  fetchUsers
+  fetchUsers,
+  updateProfile
 }
 
 const usersReducer = usersSlice.reducer

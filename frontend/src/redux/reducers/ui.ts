@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 
 type SeverityTypes = 'success' | 'error'
-type Modals = 'create-post'
+type Modals = 'create-post' | 'edit-profile' | 'comments'
 
 interface IState {
   snackbar: {
@@ -10,7 +10,9 @@ interface IState {
     message: string | null,
     severity: SeverityTypes | null
   },
-  currentModal: Modals | null
+  currentModal: Modals | null,
+  selectedImageUrl: string | null,
+  commentsViewingPostId: string | null
 }
 
 const initialState: IState = {
@@ -19,7 +21,9 @@ const initialState: IState = {
     message: null,
     severity: null
   },
-  currentModal: null
+  currentModal: 'comments',
+  selectedImageUrl: null,
+  commentsViewingPostId: null
 }
 
 const uiSlice = createSlice({
@@ -45,6 +49,18 @@ const uiSlice = createSlice({
         severity: null,
         message: null
       }
+    },
+    openViewImage(state, { payload }: PayloadAction<string>) {
+      state.selectedImageUrl = payload
+    },
+    closeViewImage(state) {
+      state.selectedImageUrl = null
+    },
+    setSelectedImageUrl(state, { payload }: PayloadAction<string>) {
+      state.selectedImageUrl = payload
+    },
+    setCommentsViewingPostId(state, { payload }: PayloadAction<string | null>) {
+      state.commentsViewingPostId = payload
     }
   },
   extraReducers: (builder) => {
@@ -58,6 +74,14 @@ export const selectSnackbar = (state: RootState) => {
 
 export const selectCurrentModal = (state: RootState) => {
   return state.ui.currentModal
+}
+
+export const selectSelectedImageUrl = (state: RootState) => {
+  return state.ui.selectedImageUrl
+}
+
+export const selectCommentsViewingPostId = (state: RootState) => {
+  return state.ui.commentsViewingPostId
 }
 
 export const uiActions = {
