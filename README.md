@@ -1,4 +1,4 @@
-# Stories(MERN)
+# Image Gallery
 
 Welcome stories app! 👋
 
