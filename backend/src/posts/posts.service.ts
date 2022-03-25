@@ -11,25 +11,13 @@ export class PostsService {
   constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {}
 
   async getAll(currentUserId: string, creator?: string) {
-    // const query = this.PostModel.aggregate()
-
-    // if (creator) {
-    //   query.match({  })
-    // }
-
-    // query.addFields({ likesCount: { $size: '$likes' } })
-    // query.addFields({ commentsCount: { $size: '$comments' } })
-
-
-    // const results = await query.exec()
-
-    // return results
-
     const query = this.PostModel.find({})
 
     if (creator) {
       query.where('creator').equals(creator)
     }
+
+    query.populate('creator')
 
     const posts = await query.exec()
 

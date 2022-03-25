@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import client from '../../utils/client'
 import { RootState } from '../store'
 import { login, register } from './auth'
+import { IUser } from './users'
 
 const createPost = createAsyncThunk('posts/create', async ({ desc, image }: { desc: string, image: File }, thunkAPI) => {
   try {
@@ -32,11 +33,8 @@ const like = createAsyncThunk('posts/like', async (postId: string, thunkAPI) => 
   try {
     const { data } = await client.patch(`/api/posts/${postId}/like`)
 
-    console.log(data)
-
     return data.post
   } catch (e) {
-    console.log(e.response)
     return thunkAPI.rejectWithValue('error')
   }
 })
@@ -45,11 +43,8 @@ const dislike = createAsyncThunk('posts/dislike', async (postId: string, thunkAP
   try {
     const { data } = await client.patch(`/api/posts/${postId}/dislike`)
 
-    console.log(data)
-
     return data.post
   } catch (e) {
-    console.log(e.response)
     return thunkAPI.rejectWithValue('error')
   }
 })
@@ -58,7 +53,7 @@ export interface IPost {
   _id: string
   desc: string
   fileUrl: string
-  creator: string
+  creator: IUser
   likes: string[]
   comments: string[]
 }
@@ -85,6 +80,11 @@ const postsSlice = createSlice({
   reducers: {
     setSelectedUser(state, { payload }: PayloadAction<string>) {
       state.selectedUserId = payload
+    },
+    addComment(state, { payload }: PayloadAction<{ postId: string, commentId: string }>) {
+      const post = state.list.find((post) => post._id === payload.postId)
+    
+      post.comments.push(payload.commentId)
     }
   },
   extraReducers: (builder) => {
@@ -133,8 +133,12 @@ export const selectPosts = (state: RootState) => {
   return state.posts.list
 }
 
-export const selectPostByCreator = (state: RootState, creator: string) => {
-  return state.posts.list.find((post) => post.creator === creator)
+export const selectPostByid = (state: RootState, _id: string) => {
+  return state.posts.list.find((post) => post._id === _id)
+}
+
+export const selectPostByCreator = (state: RootState, creatorId: string) => {
+  return state.posts.list.find((post) => post.creator._id === creatorId)
 }
 
 export const selectIsLiking = (state: RootState) => {

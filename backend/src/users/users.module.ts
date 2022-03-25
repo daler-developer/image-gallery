@@ -6,6 +6,7 @@ import { UsersService } from "./users.service"
 import { User, UserSchema } from './user.schema'
 import { PopulateUserMiddleware } from "src/middlewares/populate-user.middleware"
 import { Post, PostSchema } from "src/posts/post.schema"
+import { PostsModule } from "src/posts/posts.module"
 
 
 @Module({

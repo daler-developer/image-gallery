@@ -21,7 +21,7 @@ const initialState: IState = {
     message: null,
     severity: null
   },
-  currentModal: 'comments',
+  currentModal: null,
   selectedImageUrl: null,
   commentsViewingPostId: null
 }

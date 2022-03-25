@@ -144,11 +144,11 @@ const Post = ({ post }: IProps) => {
             }
           </IconButton>
 
-          <Badge badgeContent={post.comments.length}>
-            <IconButton onClick={handleCommentBtnClick}>
+          <IconButton onClick={handleCommentBtnClick}>
+            <Badge badgeContent={post.comments.length}>
               <ChatBubbleOutlineIcon />
-            </IconButton>
-          </Badge>
+            </Badge>
+          </IconButton>
 
         </Box>
       </Paper>

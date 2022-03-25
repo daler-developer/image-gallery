@@ -5,12 +5,14 @@ import * as path from 'path'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { PostsModule } from './posts/posts.module'
 import { UsersModule } from './users/users.module'
+import { CommentsModule } from './comments/comments.module'
 
 
 @Module({
   imports: [
     UsersModule,
     PostsModule,
+    CommentsModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_URL),
     ServeStaticModule.forRoot({

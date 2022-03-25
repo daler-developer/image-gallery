@@ -13,7 +13,8 @@ import { PostsService } from "./posts.service"
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
   ],
   controllers: [PostsController],
-  providers: [PostsService]
+  providers: [PostsService],
+  exports: [PostsService]
 })
 export class PostsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

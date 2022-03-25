@@ -16,7 +16,7 @@ export class UsersService {
   ) {}
 
   async getAll({ postLiked }: { postLiked: string }) {
-    const users = this.UserModel.find({})
+    const users = this.UserModel.find({}).select('-password')
     let post
 
     if (postLiked) {

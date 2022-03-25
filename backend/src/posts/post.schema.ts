@@ -3,7 +3,7 @@ import mongoose, { Document } from 'mongoose'
 
 export type PostDocument = Post & Document
 
-@Schema()
+@Schema({ versionKey: false })
 export class Post {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })

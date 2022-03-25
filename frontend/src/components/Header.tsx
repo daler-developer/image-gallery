@@ -5,6 +5,9 @@ import Container from '@mui/material/Container'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import IconButton from '@mui/material/IconButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import LogoutIcon from '@mui/icons-material/LogoutOutlined'
+import EditIcon from '@mui/icons-material/EditOutlined';
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Avatar from '@mui/material/Avatar'
@@ -45,7 +48,7 @@ const Header = () => {
     dispatch(uiActions.openModal('edit-profile'))
   }
   
-  return (
+  return <>
     <Paper
       variant='outlined'
       sx={{
@@ -69,21 +72,41 @@ const Header = () => {
               <Button size='small' variant='outlined' endIcon={<AddIcon />} onClick={handleAddBtnClick}>
                 Post
               </Button>              
-              <Avatar src={auth.currentUser.avatarUrl} onClick={handleAvatarClick} />
-              <Menu
-                anchorEl={anchorEl}
-                open={isOpen}
-                onClose={handleMenuClose}
-              >
-                <MenuItem onClick={handleLogoutBtnClick}>Logout</MenuItem>
-                <MenuItem onClick={handleEditBtnClick}>Edit</MenuItem>
-              </Menu>
+              <Avatar src={auth.currentUser.avatarUrl} onClick={handleAvatarClick} sx={{ cursor: 'pointer' }} />
             </Box>
           </Grid>
         </Grid>
       </Container>
     </Paper>
-  )
+
+    <Menu
+      anchorEl={anchorEl}
+      open={isOpen}
+      onClose={handleMenuClose}
+      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      PaperProps={{
+        elevation: 0,
+        sx: {
+          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+          mt: 1.5,
+        },
+      }}
+    >
+      <MenuItem onClick={handleLogoutBtnClick}>
+        <ListItemIcon>
+          <LogoutIcon />
+        </ListItemIcon>
+        Logout
+      </MenuItem>
+      <MenuItem onClick={handleEditBtnClick}>
+        <ListItemIcon>
+          <EditIcon />
+        </ListItemIcon>
+        Edit
+      </MenuItem>
+    </Menu>
+  </>
 }
 
 export default Header
