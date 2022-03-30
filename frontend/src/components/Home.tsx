@@ -54,6 +54,7 @@ const Home = () => {
             columnGap: '10px'
           }}
         >
+          <UserCard user={auth.currentUser} />
           {
             users.map((user) => (
               <UserCard

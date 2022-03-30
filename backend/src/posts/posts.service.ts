@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/mongoose"
 import { Model } from 'mongoose'
 import { Post, PostDocument } from "src/posts/post.schema"
@@ -11,17 +11,40 @@ export class PostsService {
   constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {}
 
   async getAll(currentUserId: string, creator?: string) {
-    const query = this.PostModel.find({})
+    const query = this.PostModel.aggregate([
+      {
+        $match: creator ? {
+          creator: new mongoose.Types.ObjectId(creator)
+        } : {}
+      },
+      {
+        $addFields: {
+          numLikes: { $size: '$likes' },
+          numComments: { $size: '$comments' },
+          likedByCurrentUser: { $in: [new mongoose.Types.ObjectId(currentUserId), '$likes'] }
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'creator',
+          foreignField: '_id',
+          as: 'creators'
+        }
+      },
+      {
+        $addFields: {
+          creator: { $first: '$creators' }
+        }
+      },
+      {
+        $unset: ['likes', 'comments', 'creators', 'creator.password']
+      }
+    ])
 
-    if (creator) {
-      query.where('creator').equals(creator)
-    }
+    const results = await query.exec()
 
-    query.populate('creator')
-
-    const posts = await query.exec()
-
-    return posts
+    return results
   }
 
   async getById(_id: string){
@@ -40,28 +63,24 @@ export class PostsService {
     const post = await this.PostModel.findOne({ _id: postId })
 
     if (post.likes.includes(userId)) {
-      return post
+      throw new HttpException('posts/user-already-liked', HttpStatus.BAD_REQUEST)
     }
 
     post.likes.push(userId)
 
     post.save()
-
-    return post
   }
 
   async dislike(postId: string, userId: string) {
     const post = await this.PostModel.findOne({ _id: postId })
 
     if (!post.likes.includes(userId)) {
-      return post
+      throw new HttpException('posts/user-already-disliked', HttpStatus.BAD_REQUEST)
     }
 
     post.likes = post.likes.filter((_id) => _id === userId)
 
     post.save()
-
-    return post
   }
 
   async delete(postId: string) {

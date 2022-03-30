@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { InjectModel } from "@nestjs/mongoose"
+import { Types } from 'mongoose'
 import { Model } from 'mongoose'
 import * as jwt from 'jsonwebtoken'
 
@@ -15,16 +16,16 @@ export class UsersService {
     @InjectModel(Post.name) private PostModel: Model<PostDocument>,
   ) {}
 
-  async getAll({ postLiked }: { postLiked: string }) {
+  async getAll({ postLiked, exclude }: { exclude?: string[], postLiked?: string }) {
     const users = this.UserModel.find({}).select('-password')
-    let post
 
     if (postLiked) {
-      post = await this.PostModel.findOne({ _id: postLiked })
-    }
-
-    if (postLiked) {
+      let post = await this.PostModel.findOne({ _id: postLiked })
       users.where('_id').in(post.likes)
+    }
+    
+    if (exclude) {
+      users.where('_id').nin(exclude)
     }
 
     return users

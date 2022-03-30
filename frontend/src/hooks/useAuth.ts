@@ -1,16 +1,14 @@
 import { useMemo } from "react"
-import { authActions, selectCurrentUserId } from "../redux/reducers/auth"
+import { authActions, selectCurrentUser } from "../redux/reducers/auth"
 import { selectUserById, usersActions } from "../redux/reducers/users"
 import useTypedDispatch from "./useTypedDispatch"
 import useTypedSelector from "./useTypesSelector"
 
 const useAuth = () => {
-  const userId = useTypedSelector((state) => selectCurrentUserId(state))
-  const currentUser = useTypedSelector((state) => selectUserById(state, userId))
-
+  const currentUser = useTypedSelector((state) => selectCurrentUser(state))
   const dispatch = useTypedDispatch()
 
-  const isAuthenticated = useMemo(() => Boolean(userId), [currentUser])
+  const isAuthenticated = useMemo(() => Boolean(currentUser), [currentUser])
   const hasAvatar = useMemo(() => Boolean(currentUser?.avatarUrl), [currentUser])
 
   const login = async (username: string, password: string) => {
@@ -26,7 +24,7 @@ const useAuth = () => {
   }
 
   const logout = () => {
-    dispatch(authActions.setCurrentUserId(null))
+    dispatch(authActions.setCurrentUser(null))
 
     localStorage.removeItem('auth-token')
   }

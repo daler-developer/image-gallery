@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import client from '../../utils/client'
 import { RootState } from '../store'
-import { login, register } from './auth'
 import { IUser } from './users'
 
 const createPost = createAsyncThunk('posts/create', async ({ desc, image }: { desc: string, image: File }, thunkAPI) => {
@@ -31,9 +30,9 @@ const fetchPosts = createAsyncThunk('posts/fetch', async (userId: string, thunkA
 
 const like = createAsyncThunk('posts/like', async (postId: string, thunkAPI) => {
   try {
-    const { data } = await client.patch(`/api/posts/${postId}/like`)
+    await client.patch(`/api/posts/${postId}/like`)
 
-    return data.post
+    return postId
   } catch (e) {
     return thunkAPI.rejectWithValue('error')
   }
@@ -41,9 +40,9 @@ const like = createAsyncThunk('posts/like', async (postId: string, thunkAPI) => 
 
 const dislike = createAsyncThunk('posts/dislike', async (postId: string, thunkAPI) => {
   try {
-    const { data } = await client.patch(`/api/posts/${postId}/dislike`)
+    await client.patch(`/api/posts/${postId}/dislike`)
 
-    return data.post
+    return postId
   } catch (e) {
     return thunkAPI.rejectWithValue('error')
   }
@@ -54,8 +53,9 @@ export interface IPost {
   desc: string
   fileUrl: string
   creator: IUser
-  likes: string[]
-  comments: string[]
+  numLikes: number
+  numComments: number
+  likedByCurrentUser: boolean
 }
 
 interface IState {
@@ -82,9 +82,9 @@ const postsSlice = createSlice({
       state.selectedUserId = payload
     },
     addComment(state, { payload }: PayloadAction<{ postId: string, commentId: string }>) {
-      const post = state.list.find((post) => post._id === payload.postId)
+      // const post = state.list.find((post) => post._id === payload.postId)
     
-      post.comments.push(payload.commentId)
+      // post.comments.push(payload.commentId)
     }
   },
   extraReducers: (builder) => {
@@ -112,19 +112,21 @@ const postsSlice = createSlice({
       .addCase(like.pending, (state, { payload }) => {
         state.isLiking = true
       })
-      .addCase(like.fulfilled, (state, { payload }: PayloadAction<IPost>) => {
-        const i = state.list.findIndex((post) => post._id === payload._id)
+      .addCase(like.fulfilled, (state, { payload }: PayloadAction<string>) => {
+        const i = state.list.findIndex((post) => post._id === payload)
 
         state.isLiking = false
-        state.list[i] = payload
+        state.list[i].likedByCurrentUser = true
+        state.list[i].numLikes++
       })
       .addCase(like.rejected, (state, { payload }) => {
         state.isLiking = false
       })
-      .addCase(dislike.fulfilled, (state, { payload }: PayloadAction<IPost>) => {
-        const i = state.list.findIndex((post) => post._id === payload._id)
+      .addCase(dislike.fulfilled, (state, { payload }: PayloadAction<string>) => {
+        const i = state.list.findIndex((post) => post._id === payload)
 
-        state.list[i] = payload
+        state.list[i].likedByCurrentUser = false
+        state.list[i].numLikes--
       })
   }
 })

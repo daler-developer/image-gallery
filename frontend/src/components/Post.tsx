@@ -22,7 +22,7 @@ interface IProps {
 }
 
 const Post = ({ post }: IProps) => {
-  const [usersLiked, setUsersLiked] = useState<string[]>([])
+  const [usersLiked, setUsersLiked] = useState<IUser[]>([])
   const [isPopupHidden, setIsPopupHidden] = useState(true)
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
 
@@ -31,8 +31,6 @@ const Post = ({ post }: IProps) => {
   const auth = useAuth()
 
   const dispatch = useTypedDispatch()
-
-  const isLiked = useMemo<boolean>(() => post.likes.includes(auth.currentUser._id), [post.likes, auth.currentUser])
 
   const handleLikeBtnClick = () => {
     dispatch(postsActions.like(post._id))
@@ -52,7 +50,7 @@ const Post = ({ post }: IProps) => {
 
     const { data } = await client.get(`/api/users?postLiked=${post._id}`)
 
-    setUsersLiked(data.users.map((user: IUser) => user.username))
+    setUsersLiked(data.users)
     setIsFetchingUsers(false)
   }
   
@@ -102,10 +100,10 @@ const Post = ({ post }: IProps) => {
             <DownloadOutlinedIcon />
           </IconButton>
 
-          <IconButton color='error' onClick={isLiked ? handleDislikeBtnClick : handleLikeBtnClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} sx={{ position: 'relative' }}>
-            <Badge badgeContent={post.likes.length}>
+          <IconButton color='error' onClick={post.likedByCurrentUser ? handleDislikeBtnClick : handleLikeBtnClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} sx={{ position: 'relative' }}>
+            <Badge badgeContent={post.numLikes}>
               {
-                isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />
+                post.likedByCurrentUser ? <FavoriteIcon /> : <FavoriteBorderIcon />
               }
             </Badge>
             {
@@ -123,7 +121,7 @@ const Post = ({ post }: IProps) => {
                 >
                   {
                     !isFetchingUsers ? (
-                      usersLiked.map((username) => (
+                      usersLiked.map(({ username }) => (
                         <Typography key={username} variant='body2' color='white' sx={{ whiteSpace: 'nowrap' }}>
                           {username}
                         </Typography>
@@ -145,7 +143,7 @@ const Post = ({ post }: IProps) => {
           </IconButton>
 
           <IconButton onClick={handleCommentBtnClick}>
-            <Badge badgeContent={post.comments.length}>
+            <Badge badgeContent={post.numComments}>
               <ChatBubbleOutlineIcon />
             </Badge>
           </IconButton>

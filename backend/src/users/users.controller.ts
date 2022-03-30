@@ -15,8 +15,14 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get('')
-  async getUsers(@Query('postLiked') postLiked: string) {
-    const users = await this.usersService.getAll({ postLiked })
+  async getUsers(
+    @Query('postLiked') postLiked: string,
+    @Query('exclude') exclude: string,
+  ) {
+    const users = await this.usersService.getAll({
+      ...(postLiked && { postLiked }), 
+      ...(exclude && { exclude: JSON.parse(exclude) }) 
+    })
     
     return { users }
   }

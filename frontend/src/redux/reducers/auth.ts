@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import client from "../../utils/client";
 import { RootState } from "../store";
 import { uiActions } from "./ui";
+import { IUser } from "./users";
 
 
 export const login = createAsyncThunk('auth/login', async ({ username, password }: { username: string, password: string}, thunkAPI) => {
@@ -29,34 +30,38 @@ export const register = createAsyncThunk('auth/register', async ({ username, pas
 })
 
 interface IState {
-  currentUserId: string | null
+  currentUser: IUser | null
 }
 
 const initialState: IState = {
-  currentUserId: '6235e6cae175d7c6ec41e607'
+  currentUser: {
+    _id: '6235e6cae175d7c6ec41e607',
+    username: 'daler',
+    avatarUrl: '/api/uploads/avatars/1648125205414-409062523__download.jpg'
+  }
 }
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setCurrentUserId(state, { payload }: PayloadAction<string>) {
-      state.currentUserId = payload
+    setCurrentUser(state, { payload }: PayloadAction<IUser | null>) {
+      state.currentUser = null
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, { payload }) => {
-        state.currentUserId = payload.user._id
+        state.currentUser = payload.user
       })
       .addCase(register.fulfilled, (state, { payload }) => {
-        state.currentUserId = payload.user._id
+        state.currentUser = payload.user
       })
   }
 })
 
-export const selectCurrentUserId = (state: RootState) => {
-  return state.auth.currentUserId
+export const selectCurrentUser = (state: RootState) => {
+  return state.auth.currentUser
 }
 
 export const authActions = {

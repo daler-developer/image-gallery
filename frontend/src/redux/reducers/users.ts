@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import client from '../../utils/client'
 import { RootState } from '../store'
-import { login, register } from './auth'
+import { login, register, selectCurrentUser } from './auth'
 
 const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, thunkAPI) => {
   try {
-    const { data } = await client.get(`/api/users`)
+    const currentUser = selectCurrentUser(thunkAPI.getState() as RootState)
+
+    const { data } = await client.get(`/api/users?exclude=["${currentUser._id}"]`)
 
     return data
   } catch (e) {

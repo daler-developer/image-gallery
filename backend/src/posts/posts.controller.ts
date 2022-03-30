@@ -13,7 +13,7 @@ export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Get('')
-  async getAll(@Query('creator') creator, @User('userId') userId: string) {
+  async getAll(@Query('creator') creator, @User('_id') userId: string) {
     const posts = await this.postsService.getAll(userId, creator)
 
     return { posts }
@@ -31,14 +31,14 @@ export class PostsController {
   async like(@Req() req: any, @Param('_id') _id){
     const post = await this.postsService.like(_id, req.user._id)
 
-    return { post }
+    return
   }
 
   @Patch('/:_id/dislike')
   async dislike(@Req() req: any, @Param('_id') _id){
-    const post = await this.postsService.dislike(_id, req.user._id)
+    await this.postsService.dislike(_id, req.user._id)
 
-    return { post }
+    return
   }
 
   @Delete('/:_id')

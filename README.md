@@ -1,12 +1,12 @@
 # Image Gallery
 
-Welcome stories app! 👋
+Welcome image gallery app! 👋
+
+![This is an image](/preview.jpg)
 
 ## Stack
- - Front-end: [React](https://reactjs.org/) / [Redux](https://redux.js.org/) / [Sass](https://sass-lang.com/) / [TypeScript](https://www.typescriptlang.org/docs/)
- - Back-end: [Nest.Js](https://nestjs.com/) / [Node.js](https://nodejs.org/en/)
- - Database: [MongoDB](https://www.mongodb.com/)
-
+ - Front-end: [React](https://reactjs.org/) / [Redux](https://redux.js.org/) / [Mui](https://mui.com/) / [TypeScript](https://www.typescriptlang.org/docs/)
+ - Back-end: [Nest.Js](https://nestjs.com/) / [Node.js](https://nodejs.org/en/) [MongoDB](https://www.mongodb.com/)
 
 ## Getting Started
 

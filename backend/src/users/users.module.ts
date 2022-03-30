@@ -20,6 +20,9 @@ import { PostsModule } from "src/posts/posts.module"
 })
 export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(PopulateUserMiddleware).forRoutes({ method: RequestMethod.PATCH, path: '/api/users/:_id' })
+    consumer.apply(PopulateUserMiddleware).forRoutes(
+      { method: RequestMethod.PATCH, path: '/api/users/:_id' },
+      { method: RequestMethod.GET, path: '/api/users' },
+    )
   }
 }
