@@ -2,7 +2,7 @@
 
 Welcome image gallery app! 👋
 
-![This is an image](/preview.jpg)
+![This is an image](/preview.png)
 
 ## Stack
  - Front-end: [React](https://reactjs.org/) / [Redux](https://redux.js.org/) / [Mui](https://mui.com/) / [TypeScript](https://www.typescriptlang.org/docs/)
