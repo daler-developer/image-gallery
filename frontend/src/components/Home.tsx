@@ -1,6 +1,8 @@
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Container from '@mui/material/Container'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import CircularProgress from '@mui/material/CircularProgress'
 import useTypedSelector from '../hooks/useTypesSelector'
@@ -12,6 +14,9 @@ import Header from './Header'
 import UserCard from './UserCard'
 import { useEffect, useMemo, useState } from 'react'
 import Post from './Post'
+import EditProfileModal from './EditProfileModal'
+import CreatePostModal from './CreatePostModal'
+import CommentsModal from './CommentsModal'
 
 const Home = () => {
   const [searchInputValue, setSearchInputValue] = useState('')
@@ -42,13 +47,16 @@ const Home = () => {
     }
   }, [auth.isAuthenticated])
 
-  return (
-    <Box>
+  return <>
+    <Box sx={{ paddingTop: '50px' }}>
       <Header />
       <Container maxWidth='lg'>
+        {/* <Paper elevation={2} sx={{ mt: '10px', padding: '10px'}}>
+          <Typography>USERS</Typography>
+        </Paper> */}
         <Box
           sx={{
-            marginTop: '60px',
+            marginTop: '10px',
             overflowX: 'auto',
             display: 'flex',
             columnGap: '10px'
@@ -107,7 +115,10 @@ const Home = () => {
         }
       </Container>
     </Box>
-  )
+    <CommentsModal />
+    <EditProfileModal />
+    <CreatePostModal />
+  </>
 }
 
 export default Home

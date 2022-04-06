@@ -2,9 +2,9 @@ import { createTheme } from "@mui/material";
 
 const theme = createTheme({
   components: {
-    MuiButton: {
+    MuiCircularProgress: {
       defaultProps: {
-
+        disableShrink: true
       }
     }
   }

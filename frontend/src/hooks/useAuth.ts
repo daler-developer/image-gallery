@@ -1,11 +1,13 @@
 import { useMemo } from "react"
-import { authActions, selectCurrentUser } from "../redux/reducers/auth"
+import { authActions, selectCurrentUser, selectIsVerifyingToken } from "../redux/reducers/auth"
 import { selectUserById, usersActions } from "../redux/reducers/users"
 import useTypedDispatch from "./useTypedDispatch"
 import useTypedSelector from "./useTypesSelector"
 
 const useAuth = () => {
   const currentUser = useTypedSelector((state) => selectCurrentUser(state))
+  const isVerifyingToken = useTypedSelector((state) => selectIsVerifyingToken(state))
+
   const dispatch = useTypedDispatch()
 
   const isAuthenticated = useMemo(() => Boolean(currentUser), [currentUser])
@@ -35,7 +37,8 @@ const useAuth = () => {
     hasAvatar,
     login,
     logout,
-    register
+    register,
+    isVerifyingToken
   }
 }
 

@@ -54,9 +54,9 @@ const Auth = () => {
     }
   })
 
-  // if (auth.isAuthenticated) {
-  //   return <Navigate to="/home" />
-  // }
+  if (auth.isAuthenticated) {
+    return <Navigate to="/home" />
+  }
 
   return (
     <Container component="main" maxWidth="xs">

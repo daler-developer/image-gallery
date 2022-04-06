@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import client from '../../utils/client'
 import { RootState } from '../store'
-import { login, register, selectCurrentUser } from './auth'
+import { authActions, selectCurrentUser } from './auth'
 
 const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, thunkAPI) => {
   try {
@@ -59,10 +59,10 @@ const usersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.fulfilled, (state, { payload }) => {
+      .addCase(authActions.login.fulfilled, (state, { payload }) => {
         state.list.push(payload.user)
       })
-      .addCase(register.fulfilled, (state, { payload }) => {
+      .addCase(authActions.register.fulfilled, (state, { payload }) => {
         state.list.push(payload.user)
       })
       .addCase(fetchUsers.pending, (state, { payload }: any) => {

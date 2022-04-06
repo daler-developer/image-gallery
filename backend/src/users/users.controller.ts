@@ -60,6 +60,14 @@ export class UsersController {
     return { user, token: this.usersService.generateToken(user._id)}
   }
 
+  @Post('/verify-token')
+  async verifyToken(@Body('token') token: string) {
+    const { userId } = await this.usersService.parseToken(token)
+    const user = await this.usersService.getUserById(userId)
+
+    return { user }
+  }
+
   @Patch('/update-profile')
   @UseInterceptors(FileInterceptor('avatar', { storage: avatarsStorage }))
   async updateProfile(

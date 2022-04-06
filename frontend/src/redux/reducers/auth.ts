@@ -4,8 +4,21 @@ import { RootState } from "../store";
 import { uiActions } from "./ui";
 import { IUser } from "./users";
 
+const verifyToken = createAsyncThunk('auth/verify-token', async (token: string, thunkAPI) => {
+  try {
+    const { data } = await client.post('/api/users/verify-token', { token })
 
-export const login = createAsyncThunk('auth/login', async ({ username, password }: { username: string, password: string}, thunkAPI) => {
+    return data.user
+  } catch (e) {
+    const type = e.response.data.type
+
+    console.log(e)
+
+    return thunkAPI.rejectWithValue(type)
+  }
+})
+
+const login = createAsyncThunk('auth/login', async ({ username, password }: { username: string, password: string}, thunkAPI) => {
   try {
     const { data } = await client.post('/api/users/login', { username, password })
 
@@ -17,7 +30,7 @@ export const login = createAsyncThunk('auth/login', async ({ username, password 
   }
 })
 
-export const register = createAsyncThunk('auth/register', async ({ username, password }: { username: string, password: string}, thunkAPI) => {
+const register = createAsyncThunk('auth/register', async ({ username, password }: { username: string, password: string}, thunkAPI) => {
   try {
     const { data } = await client.post('/api/users/register', { username, password })
 
@@ -31,14 +44,12 @@ export const register = createAsyncThunk('auth/register', async ({ username, pas
 
 interface IState {
   currentUser: IUser | null
+  isVerifyingToken: boolean
 }
 
 const initialState: IState = {
-  currentUser: {
-    _id: '6235e6cae175d7c6ec41e607',
-    username: 'daler',
-    avatarUrl: '/api/uploads/avatars/1648125205414-409062523__download.jpg'
-  }
+  currentUser: null,
+  isVerifyingToken: false
 }
 
 const authSlice = createSlice({
@@ -57,6 +68,16 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, { payload }) => {
         state.currentUser = payload.user
       })
+      .addCase(verifyToken.pending, (state, { payload }) => {
+        state.isVerifyingToken = true
+      }) 
+      .addCase(verifyToken.fulfilled, (state, { payload }) => {
+        state.currentUser = payload
+        state.isVerifyingToken = false
+      }) 
+      .addCase(verifyToken.rejected, (state, { payload }) => {
+        state.isVerifyingToken = false
+      }) 
   }
 })
 
@@ -64,10 +85,15 @@ export const selectCurrentUser = (state: RootState) => {
   return state.auth.currentUser
 }
 
+export const selectIsVerifyingToken = (state: RootState) => {
+  return state.auth.isVerifyingToken
+}
+
 export const authActions = {
   ...authSlice.actions,
   login,
-  register
+  register,
+  verifyToken
 }
 
 const authReducer = authSlice.reducer

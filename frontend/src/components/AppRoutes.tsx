@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import Auth from "./Auth"
+import AuthProtected from "./AuthProtected"
 import Home from "./Home"
 
 const AppRoutes = () => {
@@ -7,7 +8,7 @@ const AppRoutes = () => {
     <Routes>
       <Route index element={<Navigate to="auth" />} />
 
-      <Route path="home" element={<Home />} />
+      <Route path="home" element={<AuthProtected children={<Home />} />} />
       <Route path="auth" element={<Auth />} />
     </Routes>
   )
