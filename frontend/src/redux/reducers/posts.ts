@@ -1,10 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import client from '../../utils/client'
 import { RootState } from '../store'
+import { selectCurrentUser } from './auth'
 import { IUser } from './users'
 
 const createPost = createAsyncThunk('posts/create', async ({ desc, image }: { desc: string, image: File }, thunkAPI) => {
   try {
+    const currentUser = selectCurrentUser(thunkAPI.getState() as RootState)
+    const selectedUserId = selectSelectedUserId(thunkAPI.getState() as RootState)
+
     const form = new FormData()
 
     form.append('desc', desc)
@@ -12,9 +16,23 @@ const createPost = createAsyncThunk('posts/create', async ({ desc, image }: { de
 
     const { data } = await client.post(`/api/posts`, form)
 
+    if (currentUser._id === selectedUserId) {
+      thunkAPI.dispatch(postsActions.addPost(data.post))
+    }
+
     return data.post
   } catch (e) {
     return thunkAPI.rejectWithValue('error')
+  }
+})
+
+const deletePost = createAsyncThunk('posts/delete', async (postId: string, thunkAPI) => {
+  try {
+    await client.delete(`/api/posts/${postId}`)
+
+    return postId 
+  } catch (e) {
+    return 'test'
   }
 })
 
@@ -69,7 +87,7 @@ interface IState {
 const initialState: IState = {
   list: [],
   selectedUserId: null,
-  isFetching: false,
+  isFetching: true,
   isCreating: false,
   isLiking: false
 }
@@ -78,13 +96,17 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
+    setPosts(state, { payload } : PayloadAction<Array<IPost>>) {
+      state.list = payload
+    },
+    addPost(state, { payload }: PayloadAction<IPost>) {
+      state.list.push(payload)
+    },
     setSelectedUser(state, { payload }: PayloadAction<string>) {
       state.selectedUserId = payload
     },
-    addComment(state, { payload }: PayloadAction<{ postId: string, commentId: string }>) {
-      // const post = state.list.find((post) => post._id === payload.postId)
-    
-      // post.comments.push(payload.commentId)
+    addComment(state, { payload }) {
+      
     }
   },
   extraReducers: (builder) => {
@@ -128,6 +150,9 @@ const postsSlice = createSlice({
         state.list[i].likedByCurrentUser = false
         state.list[i].numLikes--
       })
+      .addCase(deletePost.fulfilled, (state, { payload }: PayloadAction<string>) => {
+        state.list = state.list.filter((post) => post._id !== payload)
+      })
   }
 })
 
@@ -158,6 +183,7 @@ export const selectIsPostsFetching = (state: RootState) => {
 export const postsActions = {
   ...postsSlice.actions,
   createPost,
+  deletePost,
   fetchPosts,
   like,
   dislike

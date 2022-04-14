@@ -7,6 +7,8 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import Tooltip from '@mui/material/Tooltip'
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined'
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import Divider from '@mui/material/Divider'
 import CircularProgress from '@mui/material/CircularProgress'
 import Badge from '@mui/material/Badge'
 import { IPost, postsActions, selectPostByCreator } from '../redux/reducers/posts'
@@ -29,6 +31,8 @@ const Post = ({ post }: IProps) => {
   const downloadLinkRef = useRef<HTMLAnchorElement>(null!)
 
   const auth = useAuth()
+
+  const createdByCurrentUser = useMemo(() => auth.currentUser._id === post.creator._id, [auth.currentUser])
 
   const dispatch = useTypedDispatch()
 
@@ -66,6 +70,10 @@ const Post = ({ post }: IProps) => {
   const handleCommentBtnClick = () => {
     dispatch(uiActions.openModal('comments'))
     dispatch(uiActions.setCommentsViewingPostId(post._id))
+  }
+
+  const handleDeletePostBtnClick = () => {
+    dispatch(postsActions.deletePost(post._id))
   }
 
   return <>
@@ -147,6 +155,14 @@ const Post = ({ post }: IProps) => {
               <ChatBubbleOutlineIcon />
             </Badge>
           </IconButton>
+          
+          {
+            createdByCurrentUser && (
+              <IconButton onClick={handleDeletePostBtnClick} color='error'>
+                <DeleteOutlineOutlinedIcon />
+              </IconButton>
+            )
+          }
 
         </Box>
       </Paper>

@@ -3,8 +3,6 @@ import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import Container from '@mui/material/Container'
 import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
-import IconButton from '@mui/material/IconButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import EditIcon from '@mui/icons-material/EditOutlined';
@@ -17,7 +15,7 @@ import { useMemo, useRef, useState } from 'react'
 import useTypedDispatch from '../hooks/useTypedDispatch'
 import { uiActions } from '../redux/reducers/ui'
 import logo from '../assets/logo.jpg'
-import { generateAvatarLetter } from '../utils/helpers'
+import Divider from '@mui/material/Divider'
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -85,13 +83,6 @@ const Header = () => {
       onClose={handleMenuClose}
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      PaperProps={{
-        elevation: 0,
-        sx: {
-          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-          mt: 1.5,
-        },
-      }}
     >
       <MenuItem onClick={handleLogoutBtnClick}>
         <ListItemIcon>

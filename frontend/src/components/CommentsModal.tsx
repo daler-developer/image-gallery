@@ -9,6 +9,7 @@ import { selectCommentsViewingPostId, selectCurrentModal } from "../redux/reduce
 import Modal from "./Modal"
 import client from "../utils/client"
 import { postsActions, selectPostByid } from "../redux/reducers/posts"
+import { uiActions } from '../redux/reducers/ui'
 import Comment, { IComment } from "./Comment"
 import { useFormik } from "formik"
 import * as yup from 'yup'
@@ -30,6 +31,7 @@ const CommentsModal = () => {
       fetchComments()
     } else {
       setComments([])
+      form.resetForm()
     }
   }, [isOpen])
 
@@ -38,10 +40,16 @@ const CommentsModal = () => {
       text: ''
     },
     validationSchema: yup.object().shape({
-      text: yup.string().min(3, 'Too short').max(15, 'Too long')
+      text: yup.string()
+        .trim()
+        .required('Required')
+        .min(3, 'Too short')
+        .max(100, 'Too long'),
     }),
-    onSubmit(v) {
-      createComment(v.text)
+    async onSubmit(v) {
+      await createComment(v.text)
+      form.resetForm()
+      dispatch(uiActions.closeModal())
     }
   })
 
@@ -75,11 +83,15 @@ const CommentsModal = () => {
 
       {
         isFetching ? (
-          <CircularProgress />
+          <CircularProgress sx={{ margin: '0 auto'}} />
         ) : (
-          comments.map((comment) => (
-            <Comment key={comment._id} comment={comment} />
-          ))
+          <Box sx={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', rowGap: '4px' }}>
+            {
+              comments.map((comment) => (
+                <Comment key={comment._id} comment={comment} />
+              ))
+            }
+          </Box>
         )
       }
 
@@ -102,9 +114,12 @@ const CommentsModal = () => {
         <TextField
           placeholder='Text'
           size='small'
+          name='text'
           error={form.touched.text && Boolean(form.errors.text)}
-          {...form.getFieldProps('text')}
           sx={{ flex: '1 0 0' }}
+          value={form.values.text}
+          onChange={form.handleChange}
+          onBlur={form.handleBlur}
         />
         <Button type='submit' variant='contained' size='small'>
           Send

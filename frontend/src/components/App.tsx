@@ -39,3 +39,7 @@ const App = () => {
 }
 
 export default App
+
+const Test: React.FC = () => {
+  return <h1>Daler</h1>
+}

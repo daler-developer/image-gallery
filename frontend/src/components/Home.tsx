@@ -1,22 +1,19 @@
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
-import Container from '@mui/material/Container'
-import Paper from '@mui/material/Paper'
-import Typography from '@mui/material/Typography'
-import Grid from '@mui/material/Grid'
+import Divider from '@mui/material/Divider'
 import CircularProgress from '@mui/material/CircularProgress'
 import useTypedSelector from '../hooks/useTypesSelector'
-import { selectUsers, usersActions } from '../redux/reducers/users'
+import { selectIsUsersFetching, selectUsers, usersActions } from '../redux/reducers/users'
 import useTypedDispatch from '../hooks/useTypedDispatch'
 import useAuth from '../hooks/useAuth'
 import { selectSelectedUserId, postsActions, selectPosts, selectIsPostsFetching } from '../redux/reducers/posts'
-import Header from './Header'
 import UserCard from './UserCard'
 import { useEffect, useMemo, useState } from 'react'
 import Post from './Post'
 import EditProfileModal from './EditProfileModal'
 import CreatePostModal from './CreatePostModal'
 import CommentsModal from './CommentsModal'
+import FullScreenLoader from './FullScreenLoader'
 
 const Home = () => {
   const [searchInputValue, setSearchInputValue] = useState('')
@@ -26,13 +23,12 @@ const Home = () => {
   const auth = useAuth()
 
   const users = useTypedSelector((state) => selectUsers(state))
-  const selectedUserId = useTypedSelector((state) => selectSelectedUserId(state))
   const posts = useTypedSelector((state) => selectPosts(state))
+  const selectedUserId = useTypedSelector((state) => selectSelectedUserId(state))
   const isPostsFetching = useTypedSelector((state) => selectIsPostsFetching(state))
+  const isUsersFetching = useTypedSelector((state) => selectIsUsersFetching(state))
 
-  const filteredPosts = useMemo(() => {
-    return posts.filter((post) => post.desc.includes(searchInputValue))
-  }, [posts, searchInputValue])
+  const filteredPosts = useMemo(() => posts.filter((post) => post.desc.includes(searchInputValue)), [posts, searchInputValue])
 
   useEffect(() => {
     if (selectedUserId) {
@@ -44,34 +40,54 @@ const Home = () => {
     if (auth.isAuthenticated) {
       dispatch(usersActions.fetchUsers())
       dispatch(postsActions.setSelectedUser(auth.currentUser._id))
+    } else {
+      dispatch(postsActions.setSelectedUser(null))
+      dispatch(usersActions.setUsers([]))
+      dispatch(postsActions.setPosts([]))
     }
-  }, [auth.isAuthenticated])
+  }, [])
+
+  const loader = (
+    <CircularProgress
+      disableShrink
+      color='secondary'
+      sx={{
+        display: 'block',
+        mt: '10px',
+        mx: 'auto'
+      }}
+    />
+  )
+
+  if (isPostsFetching && isUsersFetching) {
+    return loader
+  }
 
   return <>
-    <Box sx={{ paddingTop: '50px' }}>
-      <Header />
-      <Container maxWidth='lg'>
-        {/* <Paper elevation={2} sx={{ mt: '10px', padding: '10px'}}>
-          <Typography>USERS</Typography>
-        </Paper> */}
-        <Box
-          sx={{
-            marginTop: '10px',
-            overflowX: 'auto',
-            display: 'flex',
-            columnGap: '10px'
-          }}
-        >
-          <UserCard user={auth.currentUser} />
-          {
-            users.map((user) => (
-              <UserCard
-                key={user._id}
-                user={user}
-              />
-            ))
-          }
-        </Box>
+    <Box
+      sx={{
+        marginTop: '10px',
+        overflowX: 'auto',
+        display: 'flex',
+        columnGap: '10px',
+        height: '150px'
+      }}
+    >
+      <UserCard user={auth.currentUser} />
+      {
+        users.map((user) => (
+          <UserCard
+            key={user._id}
+            user={user}
+          />
+        ))
+      }
+    </Box>
+
+    <Divider sx={{ mt: '10px' }} />
+
+    {
+      isPostsFetching ? loader : <>
         <Box>
           <TextField
             size='small'
@@ -82,39 +98,25 @@ const Home = () => {
             onChange={(e) => setSearchInputValue(e.target.value)}
           />
         </Box>
-        {
-          isPostsFetching ? (
-            <CircularProgress
-              disableShrink
-              color='secondary'
-              sx={{
-                display: 'block',
-                mt: '10px',
-                mx: 'auto'
-              }}
-            />
-          ) : (
-            <Box
-              sx={{
-                mt: '10px',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr 1fr',
-                gap: '6px'
-              }}
-            >
-              {
-                filteredPosts.map((post) => (
-                  <Post
-                    key={post._id}
-                    post={post}
-                  />
-                ))
-              }
-            </Box>
-          )
-        }
-      </Container>
-    </Box>
+        <Box
+          sx={{
+            mt: '10px',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr 1fr',
+            gap: '6px'
+          }}
+        >
+          {
+            filteredPosts.map((post) => (
+              <Post
+                key={post._id}
+                post={post}
+              />
+            ))
+          }
+        </Box>
+      </>
+    }
     <CommentsModal />
     <EditProfileModal />
     <CreatePostModal />

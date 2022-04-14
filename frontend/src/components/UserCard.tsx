@@ -30,7 +30,7 @@ const UserCard = ({ user }: IProps) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        rowGap: '30px',
+        justifyContent: 'space-between',
         cursor: 'pointer',
         userSelect: 'none',
         ...(selectedUserId === user._id && {

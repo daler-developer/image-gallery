@@ -4,6 +4,6 @@ export class CreateCommentDto {
   @IsString()
   @IsNotEmpty()
   @Min(2)
-  @Max(15)
+  @Max(100)
   text: string
 }

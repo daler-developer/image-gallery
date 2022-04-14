@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
+import { authActions } from './auth'
 
 type SeverityTypes = 'success' | 'error'
 type Modals = 'create-post' | 'edit-profile' | 'comments'
@@ -64,6 +65,21 @@ const uiSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
+    builder
+      .addCase(authActions.login.rejected, (state, { payload }: any) => {
+        state.snackbar = {
+          isOpen: true,
+          severity: 'error',
+          message: payload
+        }
+      })
+      .addCase(authActions.register.rejected, (state, { payload }: any) => {
+        state.snackbar = {
+          isOpen: true,
+          severity: 'error',
+          message: payload
+        }
+      })
 
   }
 })

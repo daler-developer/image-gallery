@@ -32,7 +32,7 @@ export class UsersController {
     const user = await this.usersService.getUserById(_id)
 
     if (!user) {
-      throw new HttpException('users/user-not-found', HttpStatus.NOT_FOUND)
+      throw new HttpException('User does not exist', HttpStatus.NOT_FOUND)
     }
 
     return user
@@ -46,15 +46,21 @@ export class UsersController {
       if (user.password === body.password) {
         return { user, token: this.usersService.generateToken(user._id) }
       } else {
-        throw new HttpException('auth/incorrect-password', HttpStatus.BAD_REQUEST)
+        throw new HttpException('Incorrect password', HttpStatus.BAD_REQUEST)
       }
     }
 
-    throw new HttpException('auth/user-does-not-exist', HttpStatus.NOT_FOUND)
+    throw new HttpException('User does not exist', HttpStatus.NOT_FOUND)
   }
 
   @Post('/register')
   async register(@Body() body: CreateUserDto) {
+    const candidate = await this.usersService.getUserByUsername(body.username)
+
+    if (candidate) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST)
+    }
+
     const user = await this.usersService.create({ username: body.username, password: body.password })
 
     return { user, token: this.usersService.generateToken(user._id)}

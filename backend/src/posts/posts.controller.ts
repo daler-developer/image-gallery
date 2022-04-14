@@ -45,9 +45,9 @@ export class PostsController {
   async delete(@Param('_id') _id: string, @User('_id') userId: string) {
     const post = await this.postsService.getById(_id)
 
-    if (post.creator !== userId) {
-      throw new HttpException('posts/delete-rejected', HttpStatus.BAD_REQUEST)
-    }
+    // if (post.creator !== userId) {
+    //   throw new HttpException('posts/delete-rejected', HttpStatus.BAD_REQUEST)
+    // }
 
     const postId = await this.postsService.delete(post._id)
 

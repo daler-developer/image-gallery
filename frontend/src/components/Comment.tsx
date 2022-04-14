@@ -25,19 +25,19 @@ const Comment = ({ comment }: IProps) => {
           "avatar text"
         `,
         gridTemplateColumn: 'min-content auto',
+        gridTemplateRows: '1fr 1fr',
         justifyContent: 'start',
-        alignItems: 'center',
-        columnGap: '4px'
+        columnGap: '8px',
       }}
     >
       <Avatar
         src={comment.creator.avatarUrl} 
-        sx={{ gridArea: 'avatar' }}
+        sx={{ gridArea: 'avatar', alignSelf: 'start' }}
       />
-      <Typography variant='h6' sx={{ gridArea: 'username' }}>
+      <Typography variant='h6' sx={{ gridArea: 'username', alignSelf: 'start' }}>
         {comment.creator.username}
       </Typography>
-      <Typography variant='body2' sx={{ gridArea: 'text' }}>
+      <Typography variant='body2' sx={{ gridArea: 'text', alignSelf: 'start' }}>
         {comment.text}
       </Typography>
     </Box>

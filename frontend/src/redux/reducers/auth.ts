@@ -10,11 +10,7 @@ const verifyToken = createAsyncThunk('auth/verify-token', async (token: string, 
 
     return data.user
   } catch (e) {
-    const type = e.response.data.type
-
-    console.log(e)
-
-    return thunkAPI.rejectWithValue(type)
+    return thunkAPI.rejectWithValue(e.response.data.message as string)
   }
 })
 
@@ -24,9 +20,7 @@ const login = createAsyncThunk('auth/login', async ({ username, password }: { us
 
     return data
   } catch (e) {
-    const type = e.response.data.type
-
-    return thunkAPI.rejectWithValue(type)
+    return thunkAPI.rejectWithValue(e.response.data.message as string)
   }
 })
 
@@ -36,9 +30,7 @@ const register = createAsyncThunk('auth/register', async ({ username, password }
 
     return data
   } catch (e) {
-    const type = e.response.data.type
-
-    return thunkAPI.rejectWithValue(type)
+    return thunkAPI.rejectWithValue(e.response.data.message as string)
   }
 })
 
@@ -57,7 +49,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCurrentUser(state, { payload }: PayloadAction<IUser | null>) {
-      state.currentUser = null
+      state.currentUser = payload
     }
   },
   extraReducers: (builder) => {

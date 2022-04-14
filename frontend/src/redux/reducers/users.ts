@@ -15,7 +15,7 @@ const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, thunkAPI) => {
   }
 })
 
-const updateProfile = createAsyncThunk('users/update-rofile', async ({ username, avatar }: { username?: string, avatar?: File }, thunkAPI) => {
+const updateProfile = createAsyncThunk('users/update-profile', async ({ username, avatar }: { username?: string, avatar?: File }, thunkAPI) => {
   try {
     const form = new FormData()
 
@@ -23,6 +23,8 @@ const updateProfile = createAsyncThunk('users/update-rofile', async ({ username,
     avatar && form.append('avatar', avatar, avatar.name)
 
     const { data } = await client.patch(`/api/users/update-profile`, form)
+
+    thunkAPI.dispatch(authActions.setCurrentUser(data.user))
 
     return data.user
   } catch (e) {
@@ -42,7 +44,7 @@ interface IState {
 }
 
 const initialState: IState = {
-  list: [{ _id: '6235e6cae175d7c6ec41e607', username: 'daler' }],
+  list: [],
   isFetching: false,
 }
 
@@ -69,7 +71,7 @@ const usersSlice = createSlice({
         state.isFetching = true
       })
       .addCase(fetchUsers.fulfilled, (state, { payload }: any) => {
-        state.isFetching = true
+        state.isFetching = false
         state.list = payload.users
       })
       .addCase(fetchUsers.rejected, (state, { payload }: any) => {
@@ -78,11 +80,6 @@ const usersSlice = createSlice({
       })
       .addCase(updateProfile.pending, (state, { payload }: any) => {
 
-      })
-      .addCase(updateProfile.fulfilled, (state, { payload }: PayloadAction<IUser>) => {
-        const index = state.list.findIndex((user) => user._id === payload._id)
-        
-        state.list[index] = payload
       })
       .addCase(updateProfile.rejected, (state, { payload }: any) => {
 
@@ -96,6 +93,10 @@ export const selectUsers = (state: RootState) => {
 
 export const selectUserById = (state: RootState, _id: string) => {
   return state.users.list.find((user) => user._id === _id)
+}
+
+export const selectIsUsersFetching = (state: RootState) => {
+  return state.users.isFetching
 }
 
 export const usersActions = {
