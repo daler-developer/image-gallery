@@ -1,3 +1,4 @@
+# NOT COMPLETED YET!
 # Image Gallery
 
 Welcome image gallery app! 👋
